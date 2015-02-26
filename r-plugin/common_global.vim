@@ -775,7 +775,7 @@ function StartR(whatr)
     endif
 
     if a:whatr =~ "vanilla"
-        let b:rplugin_r_args = "--vanilla"
+        let b:rplugin_r_args = "--no-save --quiet"
     else
         if a:whatr =~ "custom"
             call inputsave()
