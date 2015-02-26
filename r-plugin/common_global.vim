@@ -1560,6 +1560,17 @@ function SendFunctionToR(e, m)
     endif
 endfunction
 
+function GetSelectionWithinLine()
+    if line("'<") == line("'>")
+        let i = col("'<") - 1
+        let j = col("'>") - i
+        let l = getline("'<")
+        let line = strpart(l, i, j)
+        return line
+    endif
+    return ""
+endfunction
+
 " Send selection to R
 function SendSelectionToR(e, m)
     if &filetype != "r" && b:IsInRCode(1) == 0
@@ -2392,11 +2403,14 @@ function PrintRObject(rkeyword)
 endfunction
 
 " Call R functions for the word under cursor
-function RAction(rcmd)
-    if &filetype == "rbrowser"
-        let rkeyword = RBrowserGetName(1, 0)
-    else
-        let rkeyword = RGetKeyWord()
+function RAction(rcmd, ...)
+    let rkeyword = GetSelectionWithinLine()
+    if rkeyword == ""
+        if &filetype == "rbrowser"
+            let rkeyword = RBrowserGetName(1, 0)
+        else
+            let rkeyword = RGetKeyWord()
+        endif
     endif
     if strlen(rkeyword) > 0
         if a:rcmd == "help"
